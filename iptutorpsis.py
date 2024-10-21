@@ -7,6 +7,12 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
+import streamlit as st
+import cv2
+
+# Set page config
+st.set_page_config(page_title="iPTutor", page_icon="🧑‍🏫")
+
 
 # Initialize session state for user information
 if "registered_email" not in st.session_state:
@@ -87,11 +93,12 @@ def main():
 
         # Use a markdown span for styled text
         st.sidebar.markdown(
-        "<span style='color: black; font-weight: bold; font-style: italic;'>"
-        "Please register with your Outlook email and password to access the application."
+         "<span style='color: black; font-weight: bold; font-style: italic; font-size: 16px;'>"
+         "Please register with your Outlook email and password to access the application."
         "</span>",
     unsafe_allow_html=True
 )
+
         
         # Sidebar for registration
         st.sidebar.markdown(
@@ -110,29 +117,65 @@ def main():
 
             
     if st.session_state.logged_in:
-        st.sidebar.write("Navigation Menu")
+        st.sidebar.header("Navigation Menu")
         page = st.sidebar.selectbox("Select a page:", ["Guideline", "Interactive Tutorial", "Question Scenarios","iPTutor Assistance","Interactive Quiz", "Student Feedback", "Logout"], key="page_select")
         
-
+ 
         if page == "Logout":
             logout()
         elif page == "Guideline":
             show_ideas_page()
+            st.sidebar.header("Basic Overview")
+            st.sidebar.write("""
+             - This section provides an overview of key concepts related to data design models, including context diagrams and data flow diagrams (DFDs).
+        """)                    
+                       
         elif page == "Interactive Tutorial":
-            # Update to use the correct function
             show_interactive_tutorial_page()
+            st.sidebar.header("Interactive Tutorial Guidelines")
+            st.sidebar.write("""
+             - In this section, you will learn how to create Data Flow Diagrams (DFDs) by drawing the DFD symbols at provided canvas.
+             -  Follow the instructions for each step to successfully complete the tutorial.
+        """)  
+     
+            st.sidebar.write("### Note:")
+            st.sidebar.write("""
+            If you encounter any issues while drawing shapes, you can simply click the Reset button to start over again.
+            """)
+        
         elif page == "Question Scenarios":
             show_question_scenarios_page()
+            st.sidebar.header("Question Scenarios Guidelines")
+            st.sidebar.write("""
+             - In this section, you will draw a Context Diagram (CD) and a Data Flow Diagram (DFD) based on the scenarios provided on the canvas. 
+             - Please enter your lecturer's email and save the details. 
+             - Follow the instructions carefully. After completing the drawing, save and submit it to your lecturer for review."
+        """)  
+     
         elif page == "iPTutor Assistance":
             show_iPTutor_Assistance()
+            st.sidebar.header("Basic Interaction Guidelines")
+            st.sidebar.write("""
+            - In this section, you interact with iPTutor Asistance BOT.
+             - Search for Code: Use keywords like 'cd', 'dfd, symbols, or 'define cd' to get relevant infomations.                   
+            """)
+              
         elif page == "Interactive Quiz":
             show_interactive_quiz_page()
+            st.sidebar.header("Interactive Quiz Guidelines")
+            st.sidebar.write("""
+            - In this section, you will test your knowledge of Data Flow Diagrams (DFDs) and context diagrams.
+            - Follow the instructions below to complete the quiz:. 
+        """)  
         elif page == "Student Feedback":
             show_user_feedback_page()
+            st.sidebar.header("Student Feedback Guidelines")
+            st.sidebar.write("""
+            - In this section, you can give a feedback to improve our services and enhance your learning experience and suggest ideas for improvements.                   
+            """)
 
         # Set the current page in session state
         st.session_state.current_page = page
-
 
     # Footer (appears on all pages)
     st.markdown("""<div style='text-align: center; margin-top: 50px;'>
@@ -157,7 +200,8 @@ def show_ideas_page():
         st.image("ladytutorico.png", width=95)
     with col2:
         st.title("Guideline for Data Design Model")
-
+    # Add a divider
+    st.markdown("---")  # This creates a horizontal line
     st.header("Introduction to Context Diagrams")
     st.write("""
     A context diagram (CD) is a high-level, simplified representation of a system that shows the system's boundaries and its interactions with external entities.
@@ -167,6 +211,8 @@ def show_ideas_page():
     - **Data Flows**: Arrows that represent the flow of information between the system and external entities.
     """)
 
+    # Add a divider
+    st.markdown("---")  # This creates a horizontal line
     st.header("Introduction to Data Flow Diagram")
     st.write("""
     A Data Flow Diagram (DFD) is a graphical representation of the flow of data through an information system.
@@ -232,7 +278,7 @@ tutorial_steps = [
 ]
 
 def show_tutorial_step(step_index):
-    st.write(f"Logged in as: {st.session_state.registered_email}")
+    #st.write(f"Logged in as: {st.session_state.registered_email}")
 
     if step_index < 0 or step_index >= len(tutorial_steps):
         st.error("Invalid tutorial step. Resetting to the beginning.")
@@ -306,15 +352,11 @@ def show_tutorial_step(step_index):
         )
 
 
-# screnarios iPTutor page
 def show_iPTutor_Assistance():
-    # Center the title using HTML
-    #st.markdown("<h1 style='text-align: center;'>iPTutor Assistance</h1>", unsafe_allow_html=True)
-
-    # Use an iframe to embed the Flask application
+    # Embed the Render-deployed iPTutor Assistance using an iframe
     st.markdown(
         """
-        <iframe src="http://127.0.0.1:5000" 
+        <iframe src="https://iptutorweb-1.onrender.com" 
                 width="100%" 
                 height="600" 
                 frameborder="0">
@@ -332,32 +374,34 @@ def show_question_scenarios_page():
         st.image("ladytutorico.png", width=95)
     with col2:
         st.title("DFD Question Scenarios")
-    
-    st.markdown("##### Instruction: Please enter the email address of your dedicated class teacher for submission purposes")
     st.write(f"Logged in as: {st.session_state.registered_email}")
+    # Add a divider
+    st.markdown("---")  # This creates a horizontal line
+    st.markdown("##### Instruction: Please enter the email address of your dedicated class teacher for submission purposes")
     # Display the logged-in message aligned to the right
-   # st.markdown(f"<div style='text-align: right;'>Logged in as: {st.session_state.registered_email}</div>", unsafe_allow_html=True)
+    #st.markdown(f"<div style='text-align: right;'>Logged in as: {st.session_state.registered_email}</div>", unsafe_allow_html=True)
     
     get_user_details()
 
     if st.session_state.lecturer_email:
-        st.write("Select a scenario to draw the corresponding DFD:")
-
-        scenario = st.selectbox("Select a scenario:", ["Scenario 1", "Scenario 2", "Scenario 3"])
-
+         # Add a divider
+        st.markdown("---")  # This creates a horizontal line
+        st.write("**Select a scenario to draw the corresponding DFD:**")
+        scenario = st.selectbox(" Scenario:", ["Scenario 1", "Scenario 2", "Scenario 3"])
+       
         if scenario == "Scenario 1":
             st.write("""
-            **Scenario 1: Online Shopping System**
+            **Scenario 1: Online Shopping System.**
             Draw a DFD to represent an online shopping system where a customer can browse products, add items to a cart, and complete a purchase.
             """)
         elif scenario == "Scenario 2":
             st.write("""
-            **Scenario 2: Library Management System**
+            **Scenario 2: Library Management System.**
             Draw a CD (context diagram) to represent a library management system where a user can search for books, borrow books, and return books.
             """)
         elif scenario == "Scenario 3":
             st.write("""
-            **Scenario 3: Student Registration System**
+            **Scenario 3: Student Registration System.**
             Draw a DFD to represent a student registration system where students can register for courses, view grades, and update personal information.
             """)
 
@@ -401,14 +445,21 @@ def show_question_scenarios_page():
 
 def show_interactive_quiz_page():
     #st.title("Interactive Quiz")
+    
     col1, mid, col2 = st.columns([1,1,20])
     with col1:
         st.image("ladytutorico.png", width=95)
     with col2:
         st.title("Interactive Quiz")
-    st.write("### Multiple Choice Questions on DFD and Context Diagram")
-       
+    
     st.write(f"Logged in as: {st.session_state.registered_email}")
+    # Add a divider
+    st.markdown("---")  # This creates a horizontal line
+    st.write("### Multiple Choice Questions on DFD and Context Diagram")
+    # Add a divider
+    #st.markdown("---")  # This creates a horizontal line 
+    #st.write(f"Logged in as: {st.session_state.registered_email}")
+    #st.markdown(f"<div style='text-align: right;'>Logged in as: {st.session_state.registered_email}</div>", unsafe_allow_html=True)
     st.markdown("##### Instruction: Please answer all questions")
     
 
@@ -464,20 +515,40 @@ def show_interactive_quiz_page():
 
 
 def show_interactive_tutorial_page():
-    #st.title("Interactive Tutorial")
     col1, mid, col2 = st.columns([1,1,20])
     with col1:
         st.image("ladytutorico.png", width=95)
     with col2:
         st.title("Interactive Tutorial")
-    st.markdown("##### Instruction: Please follow the step for each tutorial given")
+    
+    st.write(f"Logged in as: {st.session_state.registered_email}")
+    # Add a divider
+    st.markdown("---")  # This creates a horizontal line
+    # Create columns
+    col1, col2 = st.columns([1, 0.5])  # Adjust the ratio to your preference
+
+    # Column 1 for the image
+    with col1:
+        #st.image("attention.png", width=20)  
+         # Use a markdown span for styled text
+        st.markdown(
+         "<span style='color: red; font-weight: bold; font-style: italic; font-size: 24px;'>"
+         "Please reset if you encounter problems."
+        "</span>",
+    unsafe_allow_html=True
+)
+
+    # Column 2 for the message and button
+    with col2:
+        # Add a reset button in the same column
+        if st.button("Reset Tutorial", key="reset_tutorial"):
+            st.session_state.tutorial_step = 0
+            st.rerun()
+
 
     
-    # Add a reset button
-    if st.button("Reset Tutorial", key="reset_tutorial"):
-        st.session_state.tutorial_step = 0
-        st.rerun()
-    
+    # Add a divider
+    st.markdown("---")  # This creates a horizontal line
     # Make sure tutorial step is initialized
     if 'tutorial_step' not in st.session_state:
         st.session_state.tutorial_step = 0
@@ -486,10 +557,12 @@ def show_interactive_tutorial_page():
     show_tutorial_step(st.session_state.tutorial_step)
 
 
-import cv2
 import numpy as np
 from PIL import Image
 import io
+import streamlit as st
+import cv2
+
 
 # check drawing
 def check_drawing(drawing_type, image_data):
@@ -560,19 +633,21 @@ def show_user_feedback_page():
         st.image("ladytutorico.png", width=95)
     with col2:
         st.title("Student Feedback")
-    st.markdown("##### Instruction: Please give a feedback to improve our services and enhance your learning experience.")
-
-
+    st.write(f"Logged in as: {st.session_state.registered_email}")
+    #st.markdown("##### Instruction: Please give a feedback to improve our services and enhance your learning experience.")
+    # Add a divider
+    st.markdown("---")  # This creates a horizontal line
 
     # Default developer email
     developer_email = "ainie_hayati@psis.edu.my"  # Developer's email address
 
     if st.session_state.logged_in:
-        st.write(f"Logged in as: {st.session_state.registered_email}")
-
+        
         # Optional: Display Google Form link
         st.write("##### Kindly provide your feedback through this Google Form: https://forms.gle/DnKSGkycntsPoWDn6")
-        
+
+       # Add a divider
+        st.markdown("---")  # This creates a horizontal line 
         st.write("### Suggestion for Improvement")
         feedback = st.text_area("Enter your suggestion here:", key="user_feedback_textarea")
         if st.button("Submit Here", key="submit_feedback_button"):
