@@ -72,24 +72,21 @@ def main():
         # Title only appears on the main (login) page
         st.markdown(
             """
-            <div style='text-align: center;'>
-                <h1>iPTutor: Interactive Personalized Tutor for Learning Data Flow Diagram</h1>
-             </div>
+            <div style='text-align: center; background-color: #e7b322; padding: 6px; border: 2px solid #4B4B4B; border-radius: 10px;'>
+            <h1 style='color: #008080;'>iPTutor: Interactive Personalized Tutor for Learning Data Flow Diagram</h1>
+            </div>
             """,
-            unsafe_allow_html=True
+    unsafe_allow_html=True
         )
-
 
         #st.image(r"D:\PSIS\JTMK\DH52\inovasidfd\ladytutor3removebg.png", width='100', use_column_width="auto")
         background = Image.open("ladytutor3removebgsmall.png")
-        col1, col2, col3 = st.columns([1.5, 5, 0.2])
+        col1, col2, col3 = st.columns([1.3, 5, 0.2])
         col2.image(background, use_column_width="auto")
               
         # Add the tutor image in the sidebar
         st.sidebar.image("psis2019a.png", use_column_width="auto")
-
-        # Add some space after the image
-        st.sidebar.markdown("<br>", unsafe_allow_html=True)
+        
 
         # Use a markdown span for styled text
         st.sidebar.markdown(
@@ -102,9 +99,10 @@ def main():
         
         # Sidebar for registration
         st.sidebar.markdown(
-        "<span style='color: black; font-weight: bold;'>Student Login.</span>",
+        "<span style='color: black; font-weight: bold; font-size: 24px;'>Student Login </span>",
         unsafe_allow_html=True
-        )
+)
+
         with st.sidebar.form("registration_form"):
             email = st.text_input("Email (*Institution registered email only):", value=st.session_state.registered_email)
             password = st.text_input("Password (*Institution registered password only):", type="password", value=st.session_state.registered_password)
@@ -118,7 +116,7 @@ def main():
             
     if st.session_state.logged_in:
         st.sidebar.header("Navigation Menu")
-        page = st.sidebar.selectbox("Select a page:", ["Guideline", "Interactive Tutorial", "Question Scenarios","iPTutor Assistance","Interactive Quiz", "Student Feedback", "Logout"], key="page_select")
+        page = st.sidebar.selectbox("Select a page:", ["Guideline", "Interactive Tutorial", "Question Scenarios","iPTutor Assistance","Interactive Quiz", "Student Feedback"], key="page_select")
         
  
         if page == "Logout":
@@ -149,7 +147,7 @@ def main():
             st.sidebar.write("""
              - In this section, you will draw a Context Diagram (CD) and a Data Flow Diagram (DFD) based on the scenarios provided on the canvas. 
              - Please enter your lecturer's email and save the details. 
-             - Follow the instructions carefully. After completing the drawing, save and submit it to your lecturer for review."
+             - Follow the instructions carefully. After completing the drawing, save and submit it to your lecturer for review.
         """)  
      
         elif page == "iPTutor Assistance":
@@ -178,8 +176,24 @@ def main():
         st.session_state.current_page = page
 
     # Footer (appears on all pages)
-    st.markdown("""<div style='text-align: center; margin-top: 50px;'>
-    <p style='font-size: 14px;'><b>iPTutor: Developed by [Ts. Ainie Hayati Noruzman][ainie_hayati@psis.edu.my]©[2024]</p>""", unsafe_allow_html=True)
+    #st.markdown("""<div style='text-align: center; margin-top: 50px;'>
+    #<p style='font-size: 14px;'><b>iPTutor: Developed by [Ts. Ainie Hayati Noruzman][ainie_hayati@psis.edu.my]©[2024]</p>""", unsafe_allow_html=True)
+    
+    
+    st.markdown(
+    """ <div style='text-align: center; background-color: rgba(75, 75, 75, 0.5); padding: 2px; border: 2px solid #A6A6A6; border-radius: 5px; margin-top: 15px;'>
+    <p style='color: white;'>© 2024 iPTutor. All rights reserved.</p>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+   
+    # Add the logout button separately in the sidebar
+    if st.sidebar.button("Logout"):
+        logout()
+
+
 
 # Logout function
 def logout():
