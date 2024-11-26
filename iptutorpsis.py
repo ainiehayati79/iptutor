@@ -29,28 +29,37 @@ if 'current_page' not in st.session_state:
     st.session_state.current_page = "Ideas"
 
 # Function to send email
-#def send_email(sender_email, sender_password, receiver_email, subject, body, image_data):
 def send_email(sender_email, sender_password, receiver_email, subject, body, image_data=None):
     msg = MIMEMultipart()
     msg['From'] = sender_email
     msg['To'] = receiver_email
     msg['Subject'] = subject
 
+    # Attach the email body
     msg.attach(MIMEText(body, 'plain'))
 
+    # Attach an image if provided
     if image_data is not None:
-        image = MIMEImage(image_data, name="symbol.png")
+        image = MIMEImage(image_data, name="attachment.png")
         msg.attach(image)
 
     try:
+        # Connect to the SMTP server
         with smtplib.SMTP('smtp-mail.outlook.com', 587) as server:
-            server.starttls()
-            server.login(sender_email, sender_password)
-            server.send_message(msg)
+            server.starttls()  # Start TLS encryption
+            server.login(sender_email, sender_password)  # Authenticate
+            server.send_message(msg)  # Send the email
+        st.success("Email sent successfully!")
         return True
+    except smtplib.SMTPAuthenticationError as e:
+        st.error("Authentication failed: Please check your email and password.")
+        st.error(f"SMTP Error: {e.smtp_code} - {e.smtp_error.decode('utf-8')}")
+        return False
     except Exception as e:
         st.error(f"Error sending email: {str(e)}")
         return False
+
+
 
 # Function to get user details      
 def get_user_details():
