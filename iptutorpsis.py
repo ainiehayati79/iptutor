@@ -116,7 +116,7 @@ def main():
             
     if st.session_state.logged_in:
         st.sidebar.header("Navigation Menu")
-        page = st.sidebar.selectbox("Select a page:", ["Guideline", "Interactive Tutorial", "Question Scenarios","iPTutor Assistance","Interactive Quiz", "Student Feedback"], key="page_select")
+        page = st.sidebar.selectbox("Select a page:", ["Guideline", "Interactive Tutorial", "Question Scenarios","iPTutor Assistance","Interactive Quiz", "Student Feedback", "User Manual",], key="page_select")
         
  
         if page == "Logout":
@@ -170,6 +170,12 @@ def main():
             st.sidebar.header("Student Feedback Guidelines")
             st.sidebar.write("""
             - In this section, you can give a feedback to improve our services and enhance your learning experience and suggest ideas for improvements.                   
+            """)
+        elif page == "User Manual":
+            show_user_manual()
+            st.sidebar.header("User Manual Guidelines")
+            st.sidebar.write("""
+            - In this section, you can access the user manual for guidance on on how to use ipTutor.                   
             """)
 
         # Set the current page in session state
@@ -681,7 +687,23 @@ def show_user_feedback_page():
         st.warning("Please log in to submit feedback.")
 
  
-  
+
+def show_user_manual():
+    col1, mid, col2 = st.columns([1,1,20])
+    with col1:
+        st.image("ladytutorico.png", width=95)
+    with col2:
+        st.title("iPTutor: User Manual")
+
+
+     # Instead of download link, display the image
+    image_path = "iptutor_simple_steps.jpg"
+    st.image(image_path, caption="User Manual", use_column_width=True)
+
+
+
+    
+
 if __name__ == "__main__":
     main()
  
